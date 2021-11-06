@@ -8,7 +8,6 @@ namespace Sudoku.NorvigSolver
     public  class NorvigPremierSolver : ISolverSudoku
     {
 
-        
 
         public SudokuGrid Solve(SudokuGrid sorel)
         {
@@ -30,5 +29,29 @@ namespace Sudoku.NorvigSolver
 
     }
 
-    
+    public class NorvigDeuxiemeSolver : ISolverSudoku
+    {
+        
+        public SudokuGrid Solve(SudokuGrid sorel)
+        {
+            var stringSudoku = sorel.Cells.Aggregate("",
+                (strRows, row) => strRows + row.Aggregate("",
+                    (strCells, cell) => strCells + cell.ToString(CultureInfo.InvariantCulture)));
+            var converted = new Sudoku(stringSudoku);
+            var solved = Sudoku.Solve(converted);
+            var toReturn = new SudokuGrid();
+            for (var cellIndex = 0; cellIndex < solved._cells.Length; cellIndex++)
+            {
+                var cellValue = solved._cells[cellIndex].Val();
+                var rowIndex = cellIndex/9;
+                var colIndex = cellIndex%9;
+                toReturn.Cells[rowIndex][colIndex] = cellValue;
+            }
+
+            return toReturn;
+        }
+
+    }
+
+
 }
